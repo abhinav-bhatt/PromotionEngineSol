@@ -10,6 +10,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using PromotionEngine.Interface;
+using PromotionEngine.Service;
 
 namespace PromotionEngine
 {
@@ -26,6 +28,23 @@ namespace PromotionEngine
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            ConfigureServiceLifeTime(services);
+        }
+
+        private void ConfigureServiceLifeTime(IServiceCollection services)
+        {
+            services.AddScoped<IPromotionService, PromotionType1>();
+            services.AddTransient<Func<PromotionEmun, IPromotionService>>(serviceProvider => protocol =>
+            {
+                switch (protocol)
+                {
+                    case PromotionEmun.PROMOTIONTYPE1:
+                        var service = serviceProvider.GetService<PromotionType1>();
+                        return service;
+                    default:
+                        return serviceProvider.GetService<PromotionType1>();
+                };
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -39,11 +58,13 @@ namespace PromotionEngine
             app.UseHttpsRedirection();
 
             app.UseRouting();
+            app.UsePathBase("/api");
 
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapDefaultControllerRoute();
                 endpoints.MapControllers();
             });
         }

@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace PromotionEngine.Model
 {
-    public class SKU
+    public class CommonRequest
     {
-        public string Id { get; set; }
-        public decimal Price { get; set; }
+        public List<SKU> Skus { get; set; };
+        public PromotionEmun PromotionEmun { get; set; }
     }
 }

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using PromotionEngine.Interface;
+using PromotionEngine.Model;
 
 namespace PromotionEngine.Controllers
 {
@@ -11,18 +11,27 @@ namespace PromotionEngine.Controllers
     [ApiController]
     public class PromotionController : ControllerBase
     {
-        // GET: api/Promotion
-        [HttpGet]
-        public IEnumerable<string> Get()
+        private readonly IPromotionService _ipromotionservice;
+        public PromotionController(IPromotionService ipromotionService)
         {
-            return new string[] { "value1", "value2" };
+            _ipromotionservice = ipromotionService;
         }
 
         // GET: api/Promotion/5
-        [HttpGet("{id}", Name = "Get")]
-        public decimal ApplyPromotion(List<string> skuIds)
+        [HttpPost]
+        [Route("ApplyPromotion")]
+        public async Task<ActionResult> ApplyPromotion([FromBody]CommonRequest request)
         {
-            return 120;
+            try
+            {
+                var res = await _ipromotionservice.ApplyPromotion(request);
+
+                return StatusCode(200, res);
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(500, "There is some issue in applying the promotion");
+            }
         }
 
 

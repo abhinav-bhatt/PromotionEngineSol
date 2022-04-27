@@ -14,11 +14,11 @@ namespace PromotionEngineUnitTest.Model
             SKU skuObj = new SKU()
             {
                 Id = "A",
-                Price = 50
+                Quantity = 50
             };
 
             Assert.IsType<string>(skuObj.Id);
-            Assert.IsType<decimal>(skuObj.Price);
+            Assert.IsType<decimal>(skuObj.Quantity);
         }
     }
 }
